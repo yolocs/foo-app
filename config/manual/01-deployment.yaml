@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foo-app
+spec:
+  selector:
+    matchLabels:
+      app: foo-app
+  template:
+    metadata:
+      labels:
+        app: foo-app
+    spec:
+      serviceAccountName: foo-runner
+      containers:
+      - name: foo
+        image: ko://github.com/yolocs/foo-app/cmd/foo
+        env:
+        - name: DB_USER
+          value: user-foo
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: foo-user
+              key: password
+        - name: DB_NAME
+          value: sqldatabase-foo
+        ports:
+        - containerPort: 8080
+      - name: cloud-sql-proxy
+        # It is recommended to use the latest version of the Cloud SQL proxy
+        # Make sure to update on a regular schedule!
+        image: gcr.io/cloudsql-docker/gce-proxy:1.17
+        command:
+          - "/cloud_sql_proxy"
+          - "-instances=cshou-playground:us-central1:sqldatabase-dep=tcp:3306"
+        securityContext:
+          # The default Cloud SQL proxy image runs as the
+          # "nonroot" user and group (uid: 65532) by default.
+          runAsNonRoot: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: foo-app
+spec:
+  selector:
+    app: foo-app
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
