@@ -18,6 +18,7 @@ type envConfig struct {
 	DbPwd       string `envconfig:"DB_PASS" required:"true"`
 	DbName      string `envconfig:"DB_NAME" required:"true"`
 	TCPHostName string `envconfig:"TCP_HOST_NAME" default:"127.0.0.1"`
+	BucketName  string `envconfig:"BUCKET_NAME" required:"true"`
 }
 
 func main() {
@@ -39,6 +40,7 @@ func main() {
 
 	app := &app.FooApp{
 		DB:     db,
+		Bucket: env.BucketName,
 		Logger: logger,
 	}
 	http.HandleFunc("/", app.Handler)

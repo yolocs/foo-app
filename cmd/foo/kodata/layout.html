@@ -1,0 +1,21 @@
+<h1>Pets</h1>
+<table style="width:100%">
+  <tr>
+    <th>NAME</th>
+    <th>OWNER</th>
+    <th>SPECIES</th>
+    <th>SEX</th>
+    <th>BIRTH</th>
+    <th>IMAGE</th>
+  </tr>
+  {{range .}}
+  <tr>
+    <td>{{.Name}}</td>
+    <td>{{.Owner}}</td>
+    <td>{{.Species}}</td>
+    <td>{{.Sex}}</td>
+    <td>{{.Birth}}</td>
+    <td><img src="{{.Link}}" alt="{{.Name}}"></td>
+  </tr>
+  {{end}}
+</table>

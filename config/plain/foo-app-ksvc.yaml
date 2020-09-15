@@ -1,0 +1,17 @@
+apiVersion: serving.knative.dev/v1 # Current version of Knative
+kind: Service
+metadata:
+  name: foo-app-ksvc
+  namespace: foo
+  labels:
+    app: foo-app
+spec:
+  template:
+    spec:
+      serviceAccountName: foo-runner
+      containers:
+      - name: foo
+        image: ko://github.com/yolocs/foo-app/cmd/foo
+        ports:
+        - containerPort: 8080
+
